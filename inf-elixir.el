@@ -204,12 +204,13 @@ When called interactively with a prefix argument, the user will
 be prompted for the REPL command.  The default is provided by
 `inf-elixir-project-command'."
   (interactive)
-  (let ((default-directory (inf-elixir--find-project-root))
-        (cmd (cond
-              (cmd cmd)
-              (current-prefix-arg (read-from-minibuffer "Project command: " inf-elixir-project-command nil nil 'inf-elixir-project))
-              (t inf-elixir-project-command))))
-    (inf-elixir-run-cmd default-directory cmd)))
+  (if-let ((default-directory (inf-elixir--find-project-root))
+           (cmd (cond
+                 (cmd cmd)
+                 (current-prefix-arg (read-from-minibuffer "Project command: " inf-elixir-project-command nil nil 'inf-elixir-project))
+                 (t inf-elixir-project-command))))
+      (inf-elixir-run-cmd default-directory cmd)
+    (message "Not inside an Elixir project! Try running `inf-elixir' instead.")))
 
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
